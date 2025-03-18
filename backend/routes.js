@@ -11,7 +11,7 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     methods: "GET,POST,PUT,DELETE",
-    allowedHeaders: "Content-Type,Authorization",
+    allowedHeaders: "Content-Type,Authorization,x-access-token",
   })
 );
 app.use(express.json());
@@ -74,7 +74,7 @@ app.post("/login", (req, res) => {
               { userId: result[0].id },
               process.env.SECRET,
               {
-                expiresIn: 300,
+                expiresIn: 900,
               }
             );
 

@@ -3,8 +3,8 @@ import axios from "axios";
 import logo from "../assets/logo.png";
 import { useNavigate } from "react-router-dom";
 import Alert from "../components/Alert";
+import { backUrl } from "../components/Constants.jsx";
 
-const backUrl = "http://localhost:8080";
 //COMPONENT LOGIN
 function Login() {
   const [usuario, setUsuario] = useState("");
@@ -103,5 +103,4 @@ function Login() {
     </div>
   );
 }
-
 export default Login;
