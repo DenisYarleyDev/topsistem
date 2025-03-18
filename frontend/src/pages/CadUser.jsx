@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { backUrl } from "../components/Constants.jsx";
+import { useNavigate } from "react-router-dom";
+import { PenLine, Trash, Trash2 } from "lucide-react";
 
 export default function CadUser() {
   const [users, setUsers] = useState([]);
   //LIST CAD USERS
   const token = localStorage.getItem("token");
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get(`${backUrl}/users`, {
@@ -15,6 +18,11 @@ export default function CadUser() {
       })
       .then((res) => {
         setUsers(res.data);
+      })
+      .catch(() => {
+        //IF TOKEN EXPIRED OR INVALID
+        localStorage.removeItem("token");
+        navigate("/");
       });
   }, []);
 
@@ -42,10 +50,13 @@ export default function CadUser() {
                 <td className="border-y border-gray-300 px-4 py-2">
                   <div className="flex felx-row justify-between">
                     <div>{user.admin ? "sim" : "não"}</div>
-                    <div>
-                      <button>btn1</button>
-                      <button>btn2</button>
-                      <button>btn3</button>
+                    <div className="flex felx-row gap-2">
+                      <button className="hover:text-green-500 cursor-pointer">
+                        <PenLine size={20} />
+                      </button>
+                      <button className="hover:text-green-500 cursor-pointer">
+                        <Trash2 size={20} />
+                      </button>
                     </div>
                   </div>
                 </td>

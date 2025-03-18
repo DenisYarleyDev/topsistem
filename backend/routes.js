@@ -23,14 +23,13 @@ function verifyJWT(req, res, next) {
     if (err) {
       return res.status(401).json({ err });
     }
-
     req.userId = decoded.userId;
     next();
   });
 }
 
 //INITIAL ROUTE
-app.get("/", (req, res) => {
+app.get("/", verifyJWT, (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
     if (err) {
       return res.status(404).json({ res: "Sem conexão com o banco" });
