@@ -14,7 +14,15 @@ const Alert = ({ message, type, duration = 1000, onClose }) => {
 
   if (!visible) return null;
 
-  const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
+  let bgColor = "";
+  switch (type) {
+    case "success":
+      bgColor = "bg-green-500";
+      break;
+    case "failed":
+      bgColor = "bg-red-500";
+      break;
+  }
 
   return (
     <div

@@ -21,7 +21,7 @@ function verifyJWT(req, res, next) {
   const token = req.headers["x-access-token"];
   jwt.verify(token, process.env.SECRET, (err, decoded) => {
     if (err) {
-      return res.status(401).json({ err });
+      return res.status(401).json({ msg: "inautorizado erro no token" });
     }
     req.userId = decoded.userId;
     next();
@@ -41,16 +41,31 @@ app.get("/", verifyJWT, (req, res) => {
 
 //ROUTE LIST USERS
 app.get("/users", verifyJWT, (req, res) => {
-  console.log(req.userId + " tudo certo!");
-
   //GET USERS FROM DATABASE
   const SQL = `SELECT * FROM users`;
 
   db.query(SQL, (err, result) => {
     if (!err) {
-      return res.status(200).json(result);
+      return res.status(200).json({ result });
     }
     return res.status(401).json({ err });
+  });
+});
+
+//GET LOGED USER
+app.get("/logedUser", verifyJWT, (req, res) => {
+  return res.json({ user: req.userId });
+});
+
+//GET UNIQUE USER
+app.get("/user/:user", (req, res) => {
+  const { user } = req.params;
+  const SQL = "SELECT * FROM users WHERE user = ?";
+  db.query(SQL, [user], (err, results) => {
+    if (err) {
+      return res.json({ err });
+    }
+    return res.status(200).json({ results });
   });
 });
 
@@ -97,10 +112,11 @@ app.post("/login", (req, res) => {
 });
 
 //ROUTE CAD USER
-app.post("/cad-user/:id", (req, res) => {
+app.post("/cad-user/:id", verifyJWT, (req, res) => {
   const { user, password, admin } = req.body;
   //ID FROM ADMIN ACCOUNT
   const { id } = req.params;
+  console.log(id);
 
   const SQL = "SELECT * FROM users WHERE id = ?";
   db.query(SQL, [id], (err, result) => {
@@ -151,7 +167,7 @@ app.delete("/del-user/:id/:user", (req, res) => {
     //IF USER EXIST AND IS ADMIN
     if (result[0].id == id && result[0].admin == "1") {
       //SEARCH FOR USER TO BE DELETED
-      const SQL2 = "SELECT * FROM users WHERE user = ?";
+      const SQL2 = "SELECT * FROM users WHERE id = ?";
       db.query(SQL2, [user], (err, result2) => {
         if (err) {
           return res.status(401).json({ err });

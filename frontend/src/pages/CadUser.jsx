@@ -3,12 +3,21 @@ import axios from "axios";
 import { backUrl } from "../components/Constants.jsx";
 import { useNavigate } from "react-router-dom";
 import { PenLine, Trash, Trash2 } from "lucide-react";
+import Alert from "../components/Alert.jsx";
 
 export default function CadUser() {
-  const [users, setUsers] = useState([]);
+  //ALERT NOTIFICATION
+  const [show, setShow] = useState(false);
+  const [message, setMessage] = useState("");
+  const [type, setType] = useState("");
+
   //LIST CAD USERS
+  const [users, setUsers] = useState([]);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+
+  const [LogedUser, getLogedUser] = useState(null);
+
   useEffect(() => {
     axios
       .get(`${backUrl}/users`, {
@@ -17,7 +26,7 @@ export default function CadUser() {
         },
       })
       .then((res) => {
-        setUsers(res.data);
+        setUsers(res.data.result);
       })
       .catch(() => {
         //IF TOKEN EXPIRED OR INVALID
@@ -26,10 +35,108 @@ export default function CadUser() {
       });
   }, []);
 
-  console.log(users);
+  //GET LOGED USER
+  useEffect(() => {
+    axios
+      .get(`${backUrl}/logedUser`, {
+        headers: {
+          "x-access-token": token,
+        },
+      })
+      .then((res) => {
+        getLogedUser(res.data.user);
+      });
+  }, []);
+
+  //CAD NEW USER
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
+
+  function newUser() {
+    //INSERT NEW USER
+    if (user && password) {
+      axios
+        .post(
+          `${backUrl}/cad-user/${LogedUser}`,
+          {
+            user: user,
+            password: password,
+            admin: "0",
+          },
+          {
+            headers: {
+              "x-access-token": token,
+            },
+          }
+        )
+        .then(() => {
+          //RESFRESH USERS
+          axios
+            .get(`${backUrl}/users`, {
+              headers: {
+                "x-access-token": token,
+              },
+            })
+            .then((res) => {
+              setUsers(res.data.result);
+            });
+
+          //SUCCESS ON CAD USER
+          setShow(true);
+          setMessage("Novo usuário casdatrado com sucesso!");
+          setType("success");
+        })
+        .catch(() => {
+          axios.get(`${backUrl}/user/${user}`).then((res) => {
+            if (res.data.results.length == 0) {
+              setShow(true);
+              setMessage("Sem permissão para cadastrar usuários!");
+              setType("failed");
+            } else {
+              setShow(true);
+              setMessage("Usuário já cadastrado!");
+              setType("failed");
+            }
+          });
+        });
+    } else {
+      //FAILED ON CAD USER
+      setShow(true);
+      setMessage("Usuário ou senha invalidos!");
+      setType("failed");
+    }
+  }
+
+  //DELETE USER
+  function deleteUser(user) {
+    axios
+      .delete(`${backUrl}/del-user/${LogedUser}/${user}`)
+      .then(() => {
+        //RESFRESH USERS
+        axios
+          .get(`${backUrl}/users`, {
+            headers: {
+              "x-access-token": token,
+            },
+          })
+          .then((res) => {
+            setUsers(res.data.result);
+            setShow(true);
+            setType("success");
+            setMessage("Usuário excluído com sucesso!");
+          });
+      })
+      .catch(() => {
+        setShow(true);
+        setType("failed");
+        setMessage("Erro, sem permissão para excluir usuário!");
+      });
+  }
+
   return (
-    <div>
-      <table className="table-fixed w-full bg-white text-sm  text-gray-600">
+    <div className="relative text-sm  text-gray-600">
+      {show && <Alert onClose={setShow} message={message} type={type} />}
+      <table className="table-fixed w-full overflow-y-scroll max-h-[50%]">
         <thead className="bg-slate-100">
           <tr>
             <th className="text-start px-4 py-2 font-medium">ID</th>
@@ -40,7 +147,7 @@ export default function CadUser() {
         <tbody>
           {users.map((user) => {
             return (
-              <tr>
+              <tr key={user.id}>
                 <td className="border-y border-gray-300 px-4 py-2">
                   {user.id}
                 </td>
@@ -54,7 +161,12 @@ export default function CadUser() {
                       <button className="hover:text-green-500 cursor-pointer">
                         <PenLine size={20} />
                       </button>
-                      <button className="hover:text-green-500 cursor-pointer">
+                      <button
+                        onClick={() => {
+                          deleteUser(user.id);
+                        }}
+                        className="hover:text-green-500 cursor-pointer"
+                      >
                         <Trash2 size={20} />
                       </button>
                     </div>
@@ -65,6 +177,44 @@ export default function CadUser() {
           })}
         </tbody>
       </table>
+      <form className="bg-slate-300 border-y-2 gap-4 border-slate-400 flex flex-row p-4 absolute bottom-0 w-full">
+        <div className="flex flex-col">
+          <label htmlFor="usuario">Usuário</label>
+          <input
+            id="usuario"
+            name="usuario"
+            className="w-full p-1 border bg-white border-gray-300 rounded-lg"
+            onChange={(e) => {
+              setUser(e.target.value);
+            }}
+            required
+          />
+        </div>
+        <div className="flex flex-col">
+          <label htmlFor="senha">Senha</label>
+          <input
+            id="senha"
+            name="senha"
+            className="w-full p-1 border bg-white border-gray-300 rounded-lg"
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
+          />
+        </div>
+        <div className="flex flex-col justify-center gap-2">
+          <label htmlFor="admin">Admin</label>
+          <input type="checkbox" name="admin" id="admin" />
+        </div>
+        <button
+          type="button"
+          className="w-[150px] bg-green-600 text-white p-1 rounded-lg hover:bg-green-700"
+          onClick={() => {
+            newUser();
+          }}
+        >
+          Cadastrar
+        </button>
+      </form>
     </div>
   );
 }

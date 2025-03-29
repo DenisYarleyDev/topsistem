@@ -46,6 +46,7 @@ function Login() {
       //ALERT INVALID DATA LOGIN
       setMessage("Usuário ou Senha Incorretos!");
       setShow(true);
+      setType("failed");
     }
   };
 
