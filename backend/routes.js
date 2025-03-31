@@ -32,7 +32,7 @@ function verifyJWT(req, res, next) {
 app.get("/", verifyJWT, (req, res) => {
   db.query("SELECT * FROM users", (err, result) => {
     if (err) {
-      return res.status(404).json({ res: "Sem conexão com o banco" });
+      return res.status(401).json({ res: "Sem conexão com o banco" });
     }
 
     return res.status(200).json({ res: "Conectado ao banco" });
@@ -57,11 +57,23 @@ app.get("/logedUser", verifyJWT, (req, res) => {
   return res.json({ user: req.userId });
 });
 
-//GET UNIQUE USER
+//GET UNIQUE USER FROM NAME
 app.get("/user/:user", (req, res) => {
   const { user } = req.params;
   const SQL = "SELECT * FROM users WHERE user = ?";
   db.query(SQL, [user], (err, results) => {
+    if (err) {
+      return res.json({ err });
+    }
+    return res.status(200).json({ results });
+  });
+});
+
+//GET UNIQUE USER FROM ID
+app.get("/userId/:id", (req, res) => {
+  const { id } = req.params;
+  const SQL = "SELECT * FROM users WHERE id = ?";
+  db.query(SQL, [id], (err, results) => {
     if (err) {
       return res.json({ err });
     }
@@ -121,11 +133,11 @@ app.post("/cad-user/:id", verifyJWT, (req, res) => {
   const SQL = "SELECT * FROM users WHERE id = ?";
   db.query(SQL, [id], (err, result) => {
     if (err) {
-      return res.status(404).json({ err });
+      return res.status(401).json({ err });
     }
 
     if (result.length === 0) {
-      return res.status(404).json({ err: "ADMIN NÃO ENCONTRADO" });
+      return res.status(401).json({ err: "ADMIN NÃO ENCONTRADO" });
     }
 
     //IF USER EXIST AND IS ADMIN
@@ -145,7 +157,7 @@ app.post("/cad-user/:id", verifyJWT, (req, res) => {
         });
       }
     } else {
-      res.status(404).json({ error: "USER DOES NOT EXIST OR IS NOT ADMIN" });
+      res.status(401).json({ error: "USER DOES NOT EXIST OR IS NOT ADMIN" });
     }
   });
 });
@@ -158,7 +170,7 @@ app.delete("/del-user/:id/:user", (req, res) => {
   const SQL = "SELECT * FROM users WHERE id = ?";
   db.query(SQL, [id], (err, result) => {
     if (err) {
-      return res.status(404).json({ err });
+      return res.status(401).json({ err });
     }
     if (result.length === 0) {
       return res.status(404).json({ err: "USER NOT FOUND" });
@@ -195,7 +207,7 @@ app.delete("/del-user/:id/:user", (req, res) => {
         }
       });
     } else {
-      res.status(404).json({ error: "USER DOES NOT EXIST OR IS NOT ADMIN" });
+      res.status(401).json({ error: "USER DOES NOT EXIST OR IS NOT ADMIN" });
     }
   });
 });

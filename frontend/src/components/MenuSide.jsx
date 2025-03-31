@@ -1,10 +1,40 @@
-import { House } from "lucide-react";
-import { useState } from "react";
+import { CircleUserRound, House, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MenuButton from "../buttons/MenuButton";
+import axios from "axios";
+import { backUrl } from "./Constants";
 
 export default function MenuSide() {
   const navigate = useNavigate();
+
+  //LOGGED USER
+  const token = localStorage.getItem("token");
+  const [userId, setUserId] = useState(null);
+  const [user, setUser] = useState(null);
+  const [admin, setAdmin] = useState(null);
+
+  //GET ID FROM USER
+  useEffect(() => {
+    axios
+      .get(`${backUrl}/logedUser`, { headers: { "x-access-token": token } })
+      .then((res) => {
+        setUserId(res.data.user);
+      });
+  }, []);
+
+  //GET USER BY ID
+  useEffect(() => {
+    if (userId) {
+      axios.get(`${backUrl}/userId/${userId}`).then((res) => {
+        setUser(res.data.results[0].user);
+        setAdmin(res.data.results[0].admin);
+      });
+    }
+  }, [userId]);
+
+  console.log(admin);
+
   //LOGOUT REMOVE TOKEN JWT
   function logout() {
     localStorage.removeItem("token");
@@ -26,6 +56,16 @@ export default function MenuSide() {
         <h2 className="text-slate-300 font-bold text-sm">
           Top Alumínio e Segurança
         </h2>
+      </div>
+      <div className="text-white text-sm relative p-2 flex flex-row border-b-1 border-slate-700">
+        <div className="flex flex-row gap-1 capitalize items-center">
+          <CircleUserRound /> {user}
+        </div>
+        {admin == 1 ? (
+          <div className="text-blue-500 absolute right-2 translate-y-[12%]">
+            ADM
+          </div>
+        ) : null}
       </div>
       <div className="text-white p-6 relative flex flex-col space-y-5 w-[300px] text-md font-light">
         {/* menubutton create buttons and options */}

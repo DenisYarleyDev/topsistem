@@ -35,7 +35,7 @@ export default function CadUser() {
       });
   }, []);
 
-  //GET LOGED USER
+  //GET LOGGED USER
   useEffect(() => {
     axios
       .get(`${backUrl}/logedUser`, {
@@ -51,6 +51,7 @@ export default function CadUser() {
   //CAD NEW USER
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const [admin, setAdmin] = useState("0");
 
   function newUser() {
     //INSERT NEW USER
@@ -61,7 +62,7 @@ export default function CadUser() {
           {
             user: user,
             password: password,
-            admin: "0",
+            admin: admin,
           },
           {
             headers: {
@@ -203,7 +204,18 @@ export default function CadUser() {
         </div>
         <div className="flex flex-col justify-center gap-2">
           <label htmlFor="admin">Admin</label>
-          <input type="checkbox" name="admin" id="admin" />
+          <input
+            type="checkbox"
+            onChange={(e) => {
+              if (e.target.checked == true) {
+                setAdmin("1");
+              } else {
+                setAdmin("0");
+              }
+            }}
+            name="admin"
+            id="admin"
+          />
         </div>
         <button
           type="button"
