@@ -4,9 +4,11 @@ import { Navigate } from "react-router-dom";
 export default function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    return <Navigate to={"/"} />;
-  } else {
-    return children;
-  }
+  //desativar se quer acessar paginas protegidas por token
+  // if (!token) {
+  //   return <Navigate to={"/"} />;
+  // } else {
+  //   return children;
+  // }
+  return children;
 }

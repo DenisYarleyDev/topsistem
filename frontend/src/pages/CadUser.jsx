@@ -6,13 +6,44 @@ import { PenLine, Trash, Trash2 } from "lucide-react";
 import Alert from "../components/Alert.jsx";
 
 export default function CadUser() {
+  //EDIT STATE
+  const [edit, setEdit] = useState(false);
+
   //ALERT NOTIFICATION
   const [show, setShow] = useState(false);
   const [message, setMessage] = useState("");
   const [type, setType] = useState("");
 
+  //MOCK DE DADOS PARA LISTAR NO FRONT
+  const mockDataUsers = [
+    {
+      id: 1,
+      user: "Paulo",
+      password: 1234,
+      admin: 1,
+    },
+    {
+      id: 2,
+      user: "Lucas",
+      password: 1234,
+      admin: 1,
+    },
+    {
+      id: 3,
+      user: "João",
+      password: 1234,
+      admin: 1,
+    },
+    {
+      id: 4,
+      user: "Pedro",
+      password: 1234,
+      admin: 1,
+    },
+  ];
+
   //LIST CAD USERS
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState(mockDataUsers);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -30,8 +61,9 @@ export default function CadUser() {
       })
       .catch(() => {
         //IF TOKEN EXPIRED OR INVALID
-        localStorage.removeItem("token");
-        navigate("/");
+        //desativado para acessar pagina protegida
+        // localStorage.removeItem("token");
+        // navigate("/");
       });
   }, []);
 
@@ -52,6 +84,9 @@ export default function CadUser() {
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
   const [admin, setAdmin] = useState("0");
+
+  //STATE ADMIN
+  const [isAdmin, setIfAdmin] = useState(false);
 
   function newUser() {
     //INSERT NEW USER
@@ -108,6 +143,10 @@ export default function CadUser() {
     }
   }
 
+  function editUser() {
+    console.log(`${user} editado com sucesso!`);
+  }
+
   //DELETE USER
   function deleteUser(user) {
     axios
@@ -159,7 +198,21 @@ export default function CadUser() {
                   <div className="flex felx-row justify-between">
                     <div>{user.admin ? "sim" : "não"}</div>
                     <div className="flex felx-row gap-2">
-                      <button className="hover:text-green-500 cursor-pointer">
+                      <button
+                        onClick={() => {
+                          console.log(`Editando ${user.user}`);
+                          setEdit(true);
+                          setUser(user.user);
+                          setPassword(user.password);
+
+                          if (user.admin == "1") {
+                            setIfAdmin(true);
+                          } else {
+                            setIfAdmin(false);
+                          }
+                        }}
+                        className="hover:text-green-500 cursor-pointer"
+                      >
                         <PenLine size={20} />
                       </button>
                       <button
@@ -188,6 +241,7 @@ export default function CadUser() {
             onChange={(e) => {
               setUser(e.target.value);
             }}
+            value={user}
             required
           />
         </div>
@@ -200,6 +254,7 @@ export default function CadUser() {
             onChange={(e) => {
               setPassword(e.target.value);
             }}
+            value={password}
           />
         </div>
         <div className="flex flex-col justify-center gap-2">
@@ -213,19 +268,36 @@ export default function CadUser() {
                 setAdmin("0");
               }
             }}
+            checked={isAdmin ? isAdmin : null}
             name="admin"
             id="admin"
           />
         </div>
-        <button
-          type="button"
-          className="w-[150px] bg-green-600 text-white p-1 rounded-lg hover:bg-green-700"
-          onClick={() => {
-            newUser();
-          }}
-        >
-          Cadastrar
-        </button>
+        {edit ? (
+          <button
+            type="button"
+            className="w-[150px] bg-green-600 text-white p-1 rounded-lg hover:bg-green-700"
+            onClick={() => {
+              editUser();
+              setEdit(false);
+              setUser("");
+              setPassword("");
+              setIfAdmin(false);
+            }}
+          >
+            Editar
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="w-[150px] bg-green-600 text-white p-1 rounded-lg hover:bg-green-700"
+            onClick={() => {
+              newUser();
+            }}
+          >
+            Cadastrar
+          </button>
+        )}
       </form>
     </div>
   );
