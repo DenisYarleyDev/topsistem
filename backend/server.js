@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import cors from "cors";
 import userRoutes from "./routes/usersRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
+import verifyJWTRoutes from "./routes/verifyJWT.js";
 
 const app = express();
 app.use(express.json());
@@ -17,6 +18,7 @@ app.use(
 
 app.use("/", userRoutes);
 app.use("/", loginRoutes);
+app.use("/", verifyJWTRoutes)
 
 //GENERATE JSONWEBTOKEN
 export function generateToken(identifier) {
@@ -29,7 +31,7 @@ export function generateToken(identifier) {
 
 //VALIDATE JSONWEBTOKEN MIDDLEWARE
 export function validateToken(req, res, next) {
-  const token = req.headers["authorization"];
+  const token = req.headers["x-access-token"];
   if (!token) {
     return res.send("No token provided");
   }
@@ -38,8 +40,7 @@ export function validateToken(req, res, next) {
     if (err) {
       return res.send("Failed to authenticatino");
     }
-
-    req.userId = decoded;
+    req.userId = decoded.user;
     next();
   });
 }

@@ -22,8 +22,12 @@ function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(`${backUrl}/login`, {
-        user: usuario,
+        username: usuario,
         password: senha,
+      }, {
+        headers: {
+          "Content-Type": "application/json"
+        }
       });
 
       //GET JWT
@@ -42,8 +46,8 @@ function Login() {
           navigate("/home");
         }, 1000);
       }
-    } catch {
-      //ALERT INVALID DATA LOGIN
+    } catch (error) {
+      console.error("Erro no login:", error);
       setMessage("Usuário ou Senha Incorretos!");
       setShow(true);
       setType("failed");

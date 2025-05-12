@@ -27,8 +27,9 @@ export default function MenuSide() {
   useEffect(() => {
     if (userId) {
       axios.get(`${backUrl}/userId/${userId}`).then((res) => {
-        setUser(res.data.results[0].user);
-        setAdmin(res.data.results[0].admin);
+        console.log(res.data)
+        setUser(res.data.user);
+        setAdmin(res.data.admin);
       });
     }
   }, [userId]);

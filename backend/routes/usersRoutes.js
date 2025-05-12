@@ -10,4 +10,14 @@ router.get("/users", validateToken, controllers.getUsers);
 //INSERT USER
 router.post("/insertUser/:isAdmin", controllers.insertNewUser);
 
+//NAME AND isADMIM by ID(não finalizado ainda)
+router.get("/userId/:userId",(req, res)=>{
+  const userId = req.params.userId;
+  return res.json({
+    user:"kaio",
+    admim: "true",
+    userId: userId
+  })
+})
+
 export default router;
