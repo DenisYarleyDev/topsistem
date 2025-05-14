@@ -21,8 +21,11 @@ app.use("/", loginRoutes);
 app.use("/", verifyJWTRoutes)
 
 //GENERATE JSONWEBTOKEN
-export function generateToken(identifier) {
-  const token = jwt.sign({ user: identifier }, "senhasecreta", {
+export function generateToken(userId, userName) {
+  const token = jwt.sign({ 
+    userId: userId,
+    userName: userName
+  }, "senhasecreta", {
     expiresIn: 900,
   });
 
@@ -40,7 +43,9 @@ export function validateToken(req, res, next) {
     if (err) {
       return res.send("Failed to authenticatino");
     }
-    req.userId = decoded.user;
+    req.userId = decoded.userId;
+    req.userName = decoded.userName;
+
     next();
   });
 }

@@ -20,4 +20,13 @@ router.get("/userId/:userId",(req, res)=>{
   })
 })
 
+//QUAL O USUARIO LOGADO NESTA SESSAO
+router.get("/loggedUser", validateToken,(req, res) =>{
+  return res.json({
+    userId : req.userId,
+    userName : req.userName,
+    admin: 1
+  })
+} )
+
 export default router;

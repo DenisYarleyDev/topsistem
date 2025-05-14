@@ -16,8 +16,8 @@ export const userLogin = async (req, res) => {
 
   //QUERY USER
   if (user.username == username && user.password == password) {
-    //GENERATE JWT
-    const token = generateToken(user.id);
+    //GENERATE 
+    const token = generateToken(user.id, user.username);
     return res.json({ logged: true, token });
   } else {
     res.json({ logged: false });
