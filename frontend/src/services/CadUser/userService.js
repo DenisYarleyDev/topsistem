@@ -10,7 +10,7 @@ const getUsers = (token) =>
   });
 
 const getLoggedUser = (token) =>
-  axios.get(`${backUrl}/logedUser`, {
+  axios.get(`${backUrl}/loggedUser`, {
     headers: {
       "x-access-token": token
     }
@@ -28,7 +28,7 @@ const deleteUser = (loggedUser, userId, token) =>
 
 const getUserByUsername = (username) =>
   axios.get(`${backUrl}/user/${username}`);
-
+          
 export default {
   getUsers,
   getLoggedUser,
