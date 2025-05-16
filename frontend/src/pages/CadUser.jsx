@@ -27,20 +27,20 @@ export default function CadUser() {
   const handleSubmit = () => {
     const token = localStorage.getItem("token");
     const data = {
-      user: form.user,
-      password: form.password,
-      admin: form.admin ? "1" : "0",
+      newUserUsername: form.user,
+      newUserPassword: form.password,
+      newUserAdmin: form.admin ? "1" : "0",
     };
 
     userService
-      .createUser(data, token, loggedUser)
+      .createUser(data, token)
       .then(() => {
         loadUsers();
         setAlert({ message: "Usuário cadastrado com sucesso!", type: "success" });
         setShowAlert(true);
       })
-      .catch(() => {
-        setAlert({ message: "Erro ao cadastrar usuário", type: "failed" });
+      .catch((err) => {
+        setAlert({ message: err.message,  type: "failed" });
         setShowAlert(true);
       });
 

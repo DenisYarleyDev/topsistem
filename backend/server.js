@@ -1,5 +1,5 @@
 import express from "express";
-import jwt from "jsonwebtoken";
+
 import cors from "cors";
 import userRoutes from "./routes/usersRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
@@ -20,35 +20,7 @@ app.use("/", userRoutes);
 app.use("/", loginRoutes);
 app.use("/", verifyJWTRoutes)
 
-//GENERATE JSONWEBTOKEN
-export function generateToken(userId, userName) {
-  const token = jwt.sign({ 
-    userId: userId,
-    userName: userName
-  }, "senhasecreta", {
-    expiresIn: 900,
-  });
 
-  return token;
-}
-
-//VALIDATE JSONWEBTOKEN MIDDLEWARE
-export function validateToken(req, res, next) {
-  const token = req.headers["x-access-token"];
-  if (!token) {
-    return res.send("No token provided");
-  }
-
-  jwt.verify(token, "senhasecreta", (err, decoded) => {
-    if (err) {
-      return res.send("Failed to authenticatino");
-    }
-    req.userId = decoded.userId;
-    req.userName = decoded.userName;
-
-    next();
-  });
-}
 
 const port = 8080;
 app.listen(port, (err) => {

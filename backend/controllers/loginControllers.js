@@ -1,5 +1,5 @@
 import { login } from "../models/loginModel.js";
-import { generateToken } from "../server.js";
+import { generateToken } from "../services/auth/genereteToken.js";
 
 //LOGIN
 export const userLogin = async (req, res) => {
@@ -17,7 +17,7 @@ export const userLogin = async (req, res) => {
   //QUERY USER
   if (user.username == username && user.password == password) {
     //GENERATE 
-    const token = generateToken(user.id, user.username);
+    const token = generateToken(user.id, user.username, user.admin);
     return res.json({ logged: true, token });
   } else {
     res.json({ logged: false });

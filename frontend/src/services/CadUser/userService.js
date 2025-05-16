@@ -16,10 +16,23 @@ const getLoggedUser = (token) =>
     }
   });
 
-const createUser = (data, token, loggedUser) =>
-  axios.post(`${backUrl}/cad-user/${loggedUser}`, data, {
-    headers: { "x-access-token": token },
-  });
+const createUser = async (data, token) => {
+  try {
+    const res = await axios.post(`${backUrl}/cad-user/`, data, {
+      headers: { "x-access-token": token },
+    });
+    return res.data;
+  } catch (err) {
+    // extrai a mensagem de erro do back ou usa fallback genérico
+    const msg =
+      err.response?.data?.message || // seu { message: '...' }
+      err.response?.data?.erro ||    // caso use “erro” em PT-BR
+      err.message ||                 // fallback do Axios
+      "Erro desconhecido";
+    // lança um Error com essa mensagem
+    throw new Error(msg);
+  }
+};
 
 const deleteUser = (loggedUser, userId, token) =>
   axios.delete(`${backUrl}/del-user/${loggedUser}/${userId}`, {

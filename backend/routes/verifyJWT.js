@@ -1,11 +1,10 @@
 import express from "express";
-
-import { validateToken } from "../server.js";
+import { ValidateToken } from "../middleware/auth/validadeToken.js";
 
 const router = express.Router();
 
 //rota para verificar verificar JWT
-router.post("/verifyJWT", validateToken, (req, res) => {
+router.post("/verifyJWT", ValidateToken, (req, res) => {
     return res.json({ "valid": true });
 });
 
