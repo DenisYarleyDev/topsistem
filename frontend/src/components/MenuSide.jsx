@@ -1,104 +1,161 @@
-import { CircleUserRound, House, User } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import MenuButton from "../buttons/MenuButton";
+import React, { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { Home, Users, LogOut, UserCircle2 } from "lucide-react";
 import axios from "axios";
 import { backUrl } from "./Constants";
 
 export default function MenuSide() {
   const navigate = useNavigate();
-
-  //LOGGED USER
   const token = localStorage.getItem("token");
-  const [userId, setUserId] = useState(null);
-  const [user, setUser] = useState(null);
-  const [admin, setAdmin] = useState(null);
+  const [username, setUsername] = useState("");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [openMenus, setOpenMenus] = useState({});
 
-  //GET ID FROM USER
+  // definição dos itens de menu
+  const menuItems = [
+    { 
+      name: "Dashboard", 
+      icon: Home, 
+      to: "/home" 
+    },
+    {
+      name: "Cadastro",
+      icon: Users,
+      subItems: [
+        { name: "Clientes", to: "/cad-client" },
+        { name: "Usuários", to: "/cad-user" },
+        { name: "Vendedores", to: "/cad-seller" }, 
+        { name: "Produtos", to: "/cad-product" },
+      ],
+    },
+  ];
+
+  // busca usuário e permissão
   useEffect(() => {
-    axios
-      .get(`${backUrl}/logedUser`, { headers: { "x-access-token": token } })
-      .then((res) => {
-        setUserId(res.data.user);
-      });
-  }, []);
+    (async () => {
+      try {
+        const {data}  = await axios.get(
+          `${backUrl}/loggedUser`,
+          { headers: { "x-access-token": token } }
+        );
+        setUsername(data.userName);
+        if(data.admin===1){
+          setIsAdmin(true);
+        }
+        
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [token]);
 
-  //GET USER BY ID
-  useEffect(() => {
-    if (userId) {
-      axios.get(`${backUrl}/userId/${userId}`).then((res) => {
-        setUser(res.data.results[0].user);
-        setAdmin(res.data.results[0].admin);
-      });
-    }
-  }, [userId]);
-
-  console.log(admin);
-
-  //LOGOUT REMOVE TOKEN JWT
   function logout() {
     localStorage.removeItem("token");
     navigate("/");
   }
 
-  //SHOW AND HIDDEN OPTIONS MENUBAR INITIAL STATE
-  const stateMenu = {
-    dashboard: false,
-    cadastro: false,
-  };
-
-  const [showMenu, setShowMenu] = useState(stateMenu);
-
   return (
-    <div className="bg-slate-900 min-h-screen w-min space">
-      <div className="bg-slate-800 flex justify-center items-center space-x-4 p-10">
-        <img src="/logo.png" className="w-[60px]" />
-        <h2 className="text-slate-300 font-bold text-sm">
-          Top Alumínio e Segurança
-        </h2>
-      </div>
-      <div className="text-white text-sm relative p-2 flex flex-row border-b-1 border-slate-700">
-        <div className="flex flex-row gap-1 capitalize items-center">
-          <CircleUserRound /> {user}
+    <aside className="flex-shrink-0 w-60 bg-slate-900 text-slate-200 flex flex-col">
+      {/* Branding */}
+      <div className="bg-slate-800 flex items-center gap-3 px-6 py-5">
+        <img src="/logo.png" alt="Logo" className="w-10 h-10" />
+        <div>
+          <h1 className="text-lg font-bold">TOP Alumínio</h1>
+          <p className="text-xs text-gray-400">e Segurança</p>
         </div>
-        {admin == 1 ? (
-          <div className="text-blue-500 absolute right-2 translate-y-[12%]">
-            ADM
-          </div>
-        ) : null}
       </div>
-      <div className="text-white p-6 relative flex flex-col space-y-5 w-[300px] text-md font-light">
-        {/* menubutton create buttons and options */}
-        <MenuButton
-          name={"Dashboard"}
-          path={["/home"]}
-          buttons={["botão1", "botão2", "botão3"]}
-          showMenu={showMenu.dashboard}
-          onclick={() => {
-            setShowMenu({ ...showMenu, dashboard: !showMenu.dashboard });
-          }}
-        />
-        <MenuButton
-          name={"Cadastros"}
-          path={["/cad-user", "/cad-seller", "/cad-client", "/cad-product"]}
-          buttons={[
-            "Cadastro Usuário",
-            "Cadastro Vendedor",
-            "Cadastro Cliente",
-            "Cadastro Produto",
-          ]}
-          showMenu={showMenu.cadastro}
-          onclick={() => {
-            setShowMenu({ ...showMenu, cadastro: !showMenu.cadastro });
-          }}
-        />
+
+      {/* Usuário logado */}
+      <div className="flex items-center px-6 py-3 border-b border-slate-700">
+        <UserCircle2 className="w-5 h-5 mr-2 text-green-500" />
+        <span className="flex-1">{username}</span>
+        {isAdmin ? (
+          <span className="px-2 py-0.5 text-xs font-semibold bg-blue-800 rounded">
+            ADM 
+          </span>
+        ) : (<div>Nao ADM</div>)}
       </div>
-      <div
+
+      {/* Menu */}
+      <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+        {menuItems.map((item) => {
+          const Icon = item.icon;
+          const hasSub = Array.isArray(item.subItems);
+          const isOpen = openMenus[item.name];
+
+          return (
+            <div key={item.name}>
+              {hasSub ? (
+                <button
+                  onClick={() =>
+                    setOpenMenus((prev) => ({
+                      ...prev,
+                      [item.name]: !prev[item.name],
+                    }))
+                  }
+                  className="w-full flex items-center gap-3 px-3 py-2 hover:bg-slate-800 rounded transition-colors"
+                >
+                  <Icon className="w-5 h-5" />
+                  <span className="flex-1 text-left">{item.name}</span>
+                  <svg
+                    className={`w-4 h-4 transform transition-transform ${
+                      isOpen ? "rotate-90" : ""
+                    }`}
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path d="M6 6L14 10L6 14V6Z" />
+                  </svg>
+                </button>
+              ) : (
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
+                      isActive
+                        ? "bg-slate-800 font-semibold text-green-400"
+                        : "hover:bg-slate-800"
+                    }`
+                  }
+                >
+                  <Icon className="w-5 h-5" />
+                  {item.name}
+                </NavLink>
+              )}
+
+              {/* Submenu */}
+              {hasSub && isOpen && (
+                <div className="ml-8 mt-1 space-y-1">
+                  {item.subItems.map((sub) => (
+                    <NavLink
+                      key={sub.to}
+                      to={sub.to}
+                      className={({ isActive }) =>
+                        `block px-3 py-1 rounded transition-colors text-sm ${
+                          isActive
+                            ? "bg-slate-700 text-green-300 font-medium"
+                            : "hover:bg-slate-800"
+                        }`
+                      }
+                    >
+                      {sub.name}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </nav>
+
+      {/* Logout */}
+      <button
         onClick={logout}
-        className="text-slate-300 bg-slate-800 flex flex-col items-center cursor-pointer space-y-5 p-2 text-md font-light animate-fade-in-2"
+        className="flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 transition-colors text-sm"
       >
-        SAIR
-      </div>
-    </div>
+        <LogOut className="w-5 h-5" />
+        Sair
+      </button>
+    </aside>
   );
 }

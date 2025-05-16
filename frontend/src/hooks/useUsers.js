@@ -8,7 +8,17 @@ export default function useUsers() {
   const token = localStorage.getItem("token");
 
   const loadUsers = () => {
-    userService.getUsers(token).then((res) => setUsers(res.data.result));
+    userService.getUsers(token)
+      .then((res) => {
+        setUsers(res.data)
+      }).catch((err) => {
+        console.log({
+          message:"erro no loadUser do ./hooks/useUser.js",
+          erro: err
+        })
+      });
+
+
   };
 
   const loadLoggedUser = () => {

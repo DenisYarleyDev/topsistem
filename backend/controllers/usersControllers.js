@@ -8,21 +8,18 @@ export const getUsers = async (req, res) => {
 
 //CONTROLLER FOR INSERT NEW USER
 export const insertNewUser = async (req, res) => {
-  const { username, password, admin } = req.body;
-  const { isAdmin } = req.params;
-
-  //LOGED USER (GET FROM JWT TOKEN)
-  const userLogged = await User.getUserForId(isAdmin);
-
-  //IF USER IS ADMIN
-  if (userLogged.admin == 1) {
-    if (username && password && admin) {
-      await User.insertUser(username, password, admin);
-      res.send("usuario inserido");
-    } else {
-      res.send("dados inconsistentes");
-    }
-  } else {
-    res.send("action require admin to insert new user");
+  const { newUserUsername, newUserPassword, newUserAdmin } = req.body;
+  
+  if (req.admin === 0) {
+    return res.status(403).json({message:"action require admin to insert new user"});
   }
+
+  if (newUserUsername && newUserPassword && newUserAdmin) {
+    await User.insertUser(newUserUsername, newUserPassword, newUserAdmin);
+    res.send("usuario inserido");
+  } else {
+    res.send("dados inconsistentes");
+  }
+
+  
 };

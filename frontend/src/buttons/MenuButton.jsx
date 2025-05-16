@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function MenuButton({ name, onclick, showMenu, path, buttons }) {
   const navigate = useNavigate();
-
   //MENU ROUTES
   function route(children) {
     switch (children) {
@@ -11,15 +10,16 @@ export default function MenuButton({ name, onclick, showMenu, path, buttons }) {
         return navigate("/cad-user");
       case "botão1":
         return navigate("/home");
+      // adicione outros cases conforme necessário
     }
   }
+
   return (
-    <button
+    <div
       onClick={onclick}
       className={`${
         path.includes(location.pathname) ? "text-green-500" : "text-white-300"
-      }
-            cursor-pointer flex flex-col space-x-3 animate-fade-in-2`}
+      } cursor-pointer flex flex-col space-x-3 animate-fade-in-2`}
     >
       <div className="flex flex-row space-x-3">
         <House />
@@ -31,21 +31,16 @@ export default function MenuButton({ name, onclick, showMenu, path, buttons }) {
           showMenu ? "opacity-100 translate-x-0" : "hidden translate-x-5"
         } rounded-r-md mt-2 w-[200px] p-2 gap-1 flex flex-col`}
       >
-        {buttons.map((element) => {
-          return (
-            <button
-              onClick={(e) => {
-                //SEND BUTTON CONTENT FROM DEFINE ROUTE
-                route(e.target.innerHTML);
-              }}
-              className="text-slate-300 cursor-pointer"
-              key={element}
-            >
-              {element}
-            </button>
-          );
-        })}
+        {buttons.map((element) => (
+          <button
+            onClick={(e) => route(e.target.innerHTML)}
+            className="text-slate-300 cursor-pointer"
+            key={element}
+          >
+            {element}
+          </button>
+        ))}
       </div>
-    </button>
+    </div>
   );
 }

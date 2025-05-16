@@ -1,61 +1,47 @@
 // services/userService.js
+import axios from "axios";
+import { backUrl } from "../../components/Constants";
 
-// Dados mockados
-let mockDataUsers = [
-  { id: 1, user: "Paulo", password: 1234, admin: 1 },
-  { id: 2, user: "Lucas", password: 1234, admin: 1 },
-  { id: 3, user: "João", password: 1234, admin: 1 },
-  { id: 4, user: "Pedro", password: 1234, admin: 1 },
-];
+const getUsers = (token) =>
+  axios.get(`${backUrl}/users`, {
+    headers: {
+      "x-access-token": token
+    }
+  });
 
-// Simula um delay como se fosse uma requisição real
-const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+const getLoggedUser = (token) =>
+  axios.get(`${backUrl}/loggedUser`, {
+    headers: {
+      "x-access-token": token
+    }
+  });
 
-// Funções mockadas
-const getUsers = async () => {
-  await delay(300); // simula tempo de resposta
-  return { data: { result: mockDataUsers } };
-};
-
-const getLoggedUser = async () => {
-  await delay(100);
-  return { data: { user: "admin" } };
-};
-
-const createUser = async (data) => {
-  await delay(200);
-  const exists = mockDataUsers.find((u) => u.user === data.user);
-  if (exists) {
-    return Promise.reject({ message: "Usuário já existe" });
+const createUser = async (data, token) => {
+  try {
+    const res = await axios.post(`${backUrl}/cad-user/`, data, {
+      headers: { "x-access-token": token },
+    });
+    return res.data;
+  } catch (err) {
+    // extrai a mensagem de erro do back ou usa fallback genérico
+    const msg =
+      err.response?.data?.message || // seu { message: '...' }
+      err.response?.data?.erro ||    // caso use “erro” em PT-BR
+      err.message ||                 // fallback do Axios
+      "Erro desconhecido";
+    // lança um Error com essa mensagem
+    throw new Error(msg);
   }
-
-  const newUser = {
-    ...data,
-    id: mockDataUsers.length + 1,
-  };
-
-  mockDataUsers.push(newUser);
-
-  return { data: { success: true } };
 };
 
-const deleteUser = async (userId) => {
-  await delay(200);
-  const originalLength = mockDataUsers.length;
-  mockDataUsers = mockDataUsers.filter((user) => user.id !== userId);
-  if (mockDataUsers.length === originalLength) {
-    return Promise.reject({ message: "Usuário não encontrado" });
-  }
+const deleteUser = (loggedUser, userId, token) =>
+  axios.delete(`${backUrl}/del-user/${loggedUser}/${userId}`, {
+    headers: { "x-access-token": token },
+  });
 
-  return { data: { success: true } };
-};
-
-const getUserByUsername = async (username) => {
-  await delay(100);
-  const results = mockDataUsers.filter((user) => user.user === username);
-  return { data: { results } };
-};
-
+const getUserByUsername = (username) =>
+  axios.get(`${backUrl}/user/${username}`);
+          
 export default {
   getUsers,
   getLoggedUser,

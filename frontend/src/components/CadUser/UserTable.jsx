@@ -1,6 +1,6 @@
 import { PenLine, Trash2 } from "lucide-react";
 
-export default function UserTable({ users, onEdit, onDelete }) {
+export default function UserTable({ users = [], onEdit, onDelete }) {
   return (
     <div className="bg-white rounded-xl shadow overflow-x-auto w-full">
       <table className="w-full text-left table-auto border-collapse">
@@ -18,7 +18,7 @@ export default function UserTable({ users, onEdit, onDelete }) {
               className={`text-center text-gray-800 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}`}
             >
               <td className="p-3">{user.id}</td>
-              <td className="p-3">{user.user}</td>
+              <td className="p-3">{user.username}</td>
               <td className="p-3">
                 <div className="flex justify-center items-center gap-4">
                   <span
