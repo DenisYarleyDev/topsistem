@@ -6,7 +6,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "backend": "nodemon ./server.js",
+    "backend": "nodemon ./src/server.js",
     "frontend": "cd ../frontend && npm run dev",
     "start": "concurrently \"npm run backend\" \"npm run frontend\""
   },
