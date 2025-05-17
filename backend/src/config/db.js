@@ -1,21 +1,18 @@
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 
-//!!!!REFATORAR AO PADRÃO MVC
-
 dotenv.config();
 
-//DATABASE CONNECTION
-
-//QUANDO POR EM PRODUÇÃO USAR ENV
-const db = await mysql.createConnection({
-  database: "railway",
-  user: "root",
-  password: "ffKZWQVdbZxtwKzSKKIYDEMPfbHcpEmr",
-  host: "shortline.proxy.rlwy.net",
-  port: 33837,
+const db = mysql.createPool({
+  host            : process.env.DB_HOST,
+  port            : Number(process.env.DB_PORT),
+  user            : process.env.DB_USER,
+  password        : process.env.DB_PASS,
+  database        : process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit : 10,
+  queueLimit      : 0,
 });
 
-console.log("Conectado ao banco");
-
+console.log("✅ Pool de conexões MySQL criado");
 export default db;
