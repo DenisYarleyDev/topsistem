@@ -31,7 +31,7 @@ app.listen(port, (err) => {
   if (err) {
     return console.log(err);
   }
-  console.log(`SERVER http://localhost:${port}`);
+  console.log(`SERVER  http://localhost:${port}`);
 });
 
 //!!!!REFATORAR AO PADRÃO MVC

@@ -17,7 +17,7 @@ export const userLogin = async (req, res) => {
   //QUERY USER
   if (user.username == username && user.password == password) {
     //GENERATE 
-    const token = generateToken(user.id, user.username, user.admin);
+    const token = generateToken(user.id, user.username, user.cargo);
     return res.json({ logged: true, token });
   } else {
     res.json({ logged: false });
