@@ -25,7 +25,7 @@ router.get("/loggedUser", ValidateToken,(req, res) =>{
   return res.json({
     userId : req.userId,
     userName : req.userName,
-    admin: 1
+    cargo: req.cargo
   })
 } )
 
