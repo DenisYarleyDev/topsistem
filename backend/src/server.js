@@ -1,10 +1,12 @@
 import express from "express";
-
+import dotenv  from "dotenv";
 import cors from "cors";
+import "./config/db.js"
+
 import userRoutes from "./routes/usersRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
 import verifyJWTRoutes from "./routes/verifyJWT.js";
-import dotenv  from "dotenv";
+
 
 dotenv.config();
 
