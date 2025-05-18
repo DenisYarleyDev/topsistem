@@ -8,14 +8,16 @@ export default function UserTable({ users = [], onEdit, onDelete }) {
           <tr className="bg-slate-100 text-gray-700 text-sm">
             <th className="p-3 text-center">ID</th>
             <th className="p-3 text-center">Usuário</th>
-            <th className="p-3 text-center">Admin</th>
+            <th className="p-3 text-center">Cargo</th>
           </tr>
         </thead>
         <tbody>
           {users.map((user, idx) => (
             <tr
               key={user.id}
-              className={`text-center text-gray-800 ${idx % 2 === 0 ? "bg-white" : "bg-slate-50"}`}
+              className={`text-center text-gray-800 ${
+                idx % 2 === 0 ? "bg-white" : "bg-slate-50"
+              }`}
             >
               <td className="p-3">{user.id}</td>
               <td className="p-3">{user.username}</td>

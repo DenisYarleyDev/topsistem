@@ -13,10 +13,10 @@ export default function MenuSide() {
 
   // definição dos itens de menu
   const menuItems = [
-    { 
-      name: "Dashboard", 
-      icon: Home, 
-      to: "/home" 
+    {
+      name: "Dashboard",
+      icon: Home,
+      to: "/home",
     },
     {
       name: "Cadastro",
@@ -24,7 +24,7 @@ export default function MenuSide() {
       subItems: [
         { name: "Clientes", to: "/cad-client" },
         { name: "Usuários", to: "/cad-user" },
-        { name: "Vendedores", to: "/cad-seller" }, 
+        { name: "Vendedores", to: "/sellers" },
         { name: "Produtos", to: "/cad-product" },
       ],
     },
@@ -34,15 +34,13 @@ export default function MenuSide() {
   useEffect(() => {
     (async () => {
       try {
-        const {data}  = await axios.get(
-          `${backUrl}/loggedUser`,
-          { headers: { "x-access-token": token } }
-        );
+        const { data } = await axios.get(`${backUrl}/loggedUser`, {
+          headers: { "x-access-token": token },
+        });
         setUsername(data.userName);
-        if(data.admin===1){
+        if (data.admin === 1) {
           setIsAdmin(true);
         }
-        
       } catch (err) {
         console.error(err);
       }
@@ -71,9 +69,11 @@ export default function MenuSide() {
         <span className="flex-1">{username}</span>
         {isAdmin ? (
           <span className="px-2 py-0.5 text-xs font-semibold bg-blue-800 rounded">
-            ADM 
+            ADM
           </span>
-        ) : (<div>Nao ADM</div>)}
+        ) : (
+          <div>Nao ADM</div>
+        )}
       </div>
 
       {/* Menu */}
