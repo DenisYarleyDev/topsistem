@@ -10,11 +10,11 @@ export function ValidateToken(req, res, next) {
   jwt.verify(token, "senhasecreta", (err, decoded) => {
     if (err) {
       return res.send("Failed to authenticatino");
-    }
+    } 
 
     req.userId = decoded.userId;
     req.userName = decoded.userName;
-    req.admin = decoded.admin;
+    req.cargo = decoded.cargo;
 
     next();
   });
