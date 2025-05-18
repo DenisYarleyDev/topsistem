@@ -44,13 +44,13 @@ async function initDb() {
   `);
 
   // Insere cargos padrão
-  const roles = ["SUPERUSER", "ADMIN", "VENDEDOR"];
-  for (const role of roles) {
-    await db.execute(
-      `INSERT IGNORE INTO roles (name) VALUES (?);`,
-      [role]
-    );
-  }
+  // const roles = ["SUPERUSER", "ADMIN", "VENDEDOR"];
+  // for (const role of roles) {
+  //   await db.execute(
+  //     `INSERT IGNORE INTO roles (username) VALUES (?);`,
+  //     [role]
+  //   );
+  // }
 
   console.log("✅ Tabelas (roles, users) inicializadas com cargos padrão");
 }
