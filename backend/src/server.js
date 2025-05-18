@@ -1,12 +1,12 @@
 import express from "express";
-import dotenv  from "dotenv";
+import dotenv from "dotenv";
 import cors from "cors";
-import "./config/db.js"
+import "./config/db.js";
 
 import userRoutes from "./routes/usersRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
 import verifyJWTRoutes from "./routes/verifyJWT.js";
-
+import sellersRoutes from "./routes/sellersRoute.js";
 
 dotenv.config();
 
@@ -16,16 +16,15 @@ app.use(express.json());
 // CONFIGURAÇÃO DO CORS
 app.use(
   cors({
-    origin: process.env.URL_FRONTEND_FOR_CORS ,
+    origin: process.env.URL_FRONTEND_FOR_CORS,
     credentials: true,
   })
 );
 
 app.use("/", userRoutes);
+app.use("/", sellersRoutes);
 app.use("/", loginRoutes);
-app.use("/", verifyJWTRoutes)
-
-
+app.use("/", verifyJWTRoutes);
 
 const port = 8080;
 app.listen(port, (err) => {

@@ -7,6 +7,7 @@ import ProtectedRoute from "./components/protectedRoute.jsx";
 import Home from "./pages/Home.jsx";
 import CadUser from "./pages/CadUser.jsx";
 import Layout from "./components/Layout.jsx";
+import Sellers from "./pages/Sellers.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "cad-user",
         element: <CadUser />,
+      },
+      {
+        path: "sellers",
+        element: <Sellers />,
       },
     ],
   },
