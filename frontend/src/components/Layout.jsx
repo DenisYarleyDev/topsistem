@@ -8,6 +8,8 @@ export default function Layout() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    let intervalId; // sem anotação de tipo
+
     async function verifyJWT() {
       const token = localStorage.getItem("token");
 
@@ -21,9 +23,7 @@ export default function Layout() {
           `${backUrl}/verifyJWT`,
           {},
           {
-            headers: {
-              "x-access-token": token,
-            },
+            headers: { "x-access-token": token },
           }
         );
 
@@ -36,7 +36,14 @@ export default function Layout() {
       }
     }
 
+    // chama na montagem
     verifyJWT();
+
+    // agenda execução a cada 10s
+    intervalId = setInterval(verifyJWT, 10_000);
+
+    // cleanup ao desmontar
+    return () => clearInterval(intervalId);
   }, [navigate]);
 
   return (
