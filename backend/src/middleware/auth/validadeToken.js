@@ -14,6 +14,7 @@ export function ValidateToken(req, res, next) {
 
     req.userId = decoded.userId;
     req.userName = decoded.userName;
+    req.Admim = decoded.Admim;
     req.cargo = decoded.cargo;
 
     next();

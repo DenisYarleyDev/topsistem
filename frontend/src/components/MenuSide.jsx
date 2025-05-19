@@ -14,6 +14,7 @@ export default function MenuSide() {
 
   // definição dos itens de menu
   const menuItems = [
+
     {
       name: "Dashboard",
       icon: Home,
@@ -34,10 +35,12 @@ export default function MenuSide() {
   useEffect(() => {
     (async () => {
       try {
+
         const { data } = await axios.get(
           `${backUrl}/loggedUser`,
           { headers: { "x-access-token": token } }
         );
+        console.log(data)
         setUsername(data.userName);
         setCargoCode(data.cargo);
 
@@ -45,6 +48,7 @@ export default function MenuSide() {
         if (data.cargo === 1) setCargoLabel("SUPERUSER");
         else if (data.cargo === 2) setCargoLabel("ADMIN");
         else if (data.cargo === 3) setCargoLabel("VENDEDOR");
+
       } catch (err) {
         console.error(err);
       }
@@ -116,9 +120,8 @@ export default function MenuSide() {
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
                   <svg
-                    className={`w-4 h-4 transform transition-transform ${
-                      isOpen ? "rotate-90" : ""
-                    }`}
+                    className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-90" : ""
+                      }`}
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -129,10 +132,9 @@ export default function MenuSide() {
                 <NavLink
                   to={item.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
-                      isActive
-                        ? "bg-slate-800 font-semibold text-green-400"
-                        : "hover:bg-slate-800"
+                    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${isActive
+                      ? "bg-slate-800 font-semibold text-green-400"
+                      : "hover:bg-slate-800"
                     }`
                   }
                 >
@@ -149,10 +151,9 @@ export default function MenuSide() {
                       key={sub.to}
                       to={sub.to}
                       className={({ isActive }) =>
-                        `block px-3 py-1 rounded transition-colors text-sm ${
-                          isActive
-                            ? "bg-slate-700 text-green-300 font-medium"
-                            : "hover:bg-slate-800"
+                        `block px-3 py-1 rounded transition-colors text-sm ${isActive
+                          ? "bg-slate-700 text-green-300 font-medium"
+                          : "hover:bg-slate-800"
                         }`
                       }
                     >

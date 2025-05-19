@@ -14,8 +14,8 @@ export default function UserTable({
           <tr className="bg-slate-100 text-gray-700 text-sm">
             <th className="p-3 text-center">ID</th>
             <th className="p-3 text-center">Usuário</th>
-            <th className="p-3 text-center">Cargo</th>
-            <th className="p-3 text-center">Ações</th>
+            <th className="p-3 text-center">Admin</th>
+            
           </tr>
         </thead>
         <tbody>
