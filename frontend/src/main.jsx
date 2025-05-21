@@ -8,6 +8,7 @@ import Home from "./pages/Home.jsx";
 import CadUser from "./pages/CadUser.jsx";
 import Layout from "./components/Layout.jsx";
 import Sellers from "./pages/Sellers.jsx";
+import Products from "./pages/Products.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
         path: "sellers",
         element: <Sellers />,
       },
+      {
+        path: "products",
+        element: <Products />
+      }
     ],
   },
 ]);

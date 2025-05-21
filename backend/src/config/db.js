@@ -43,7 +43,15 @@ async function initDb() {
     ) ENGINE=InnoDB;
   `);
 
-  
+ /*  await db.execute(`
+    DROP TABLE IF EXISTS products;
+   
+  `)
+
+  await db.execute(`
+
+    DROP TABLE IF EXISTS categories;
+  `) */
   await db.execute(`
     CREATE TABLE IF NOT EXISTS categories (
       id INT AUTO_INCREMENT PRIMARY KEY,

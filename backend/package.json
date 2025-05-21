@@ -6,6 +6,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "prismaGenerate" : "npx prisma generate",
     "backend": "nodemon ./src/server.js",
     "frontend": "cd ../frontend && npm run dev",
     "start": "concurrently \"npm run backend\" \"npm run frontend\""
