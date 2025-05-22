@@ -8,15 +8,17 @@ export default function MenuSide() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [username, setUsername] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [cargoCode, setCargoCode] = useState(null); // guardamos o código numérico
+  const [cargoLabel, setCargoLabel] = useState("");
   const [openMenus, setOpenMenus] = useState({});
 
   // definição dos itens de menu
   const menuItems = [
+
     {
       name: "Dashboard",
       icon: Home,
-      to: "/home",
+      to: "/home"
     },
     {
       name: "Cadastro",
@@ -24,7 +26,6 @@ export default function MenuSide() {
       subItems: [
         { name: "Clientes", to: "/cad-client" },
         { name: "Usuários", to: "/cad-user" },
-        { name: "Vendedores", to: "/sellers" },
         { name: "Produtos", to: "/cad-product" },
       ],
     },
@@ -34,13 +35,20 @@ export default function MenuSide() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await axios.get(`${backUrl}/loggedUser`, {
-          headers: { "x-access-token": token },
-        });
+
+        const { data } = await axios.get(
+          `${backUrl}/loggedUser`,
+          { headers: { "x-access-token": token } }
+        );
+        console.log(data)
         setUsername(data.userName);
-        if (data.admin === 1) {
-          setIsAdmin(true);
-        }
+        setCargoCode(data.cargo);
+
+        // interpretação para rótulo
+        if (data.cargo === 1) setCargoLabel("SUPERUSER");
+        else if (data.cargo === 2) setCargoLabel("ADMIN");
+        else if (data.cargo === 3) setCargoLabel("VENDEDOR");
+
       } catch (err) {
         console.error(err);
       }
@@ -51,6 +59,24 @@ export default function MenuSide() {
     localStorage.removeItem("token");
     navigate("/");
   }
+
+  // ajusta menu de acordo com permissão
+  const filteredMenuItems = menuItems.map((item) => {
+    if (
+      item.name === "Cadastro" &&
+      cargoCode === 3 // vendedor
+    ) {
+      return {
+        ...item,
+        subItems: item.subItems.filter(
+          (sub) =>
+            sub.name !== "Usuários" &&
+            sub.name !== "Produtos"
+        ),
+      };
+    }
+    return item;
+  });
 
   return (
     <aside className="flex-shrink-0 w-60 bg-slate-900 text-slate-200 flex flex-col">
@@ -67,18 +93,14 @@ export default function MenuSide() {
       <div className="flex items-center px-6 py-3 border-b border-slate-700">
         <UserCircle2 className="w-5 h-5 mr-2 text-green-500" />
         <span className="flex-1">{username}</span>
-        {isAdmin ? (
-          <span className="px-2 py-0.5 text-xs font-semibold bg-blue-800 rounded">
-            ADM
-          </span>
-        ) : (
-          <div>Nao ADM</div>
-        )}
+        <span className="px-2 py-0.5 text-xs font-semibold bg-blue-800 rounded">
+          {cargoLabel}
+        </span>
       </div>
 
       {/* Menu */}
       <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-        {menuItems.map((item) => {
+        {filteredMenuItems.map((item) => {
           const Icon = item.icon;
           const hasSub = Array.isArray(item.subItems);
           const isOpen = openMenus[item.name];
@@ -98,9 +120,8 @@ export default function MenuSide() {
                   <Icon className="w-5 h-5" />
                   <span className="flex-1 text-left">{item.name}</span>
                   <svg
-                    className={`w-4 h-4 transform transition-transform ${
-                      isOpen ? "rotate-90" : ""
-                    }`}
+                    className={`w-4 h-4 transform transition-transform ${isOpen ? "rotate-90" : ""
+                      }`}
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -111,10 +132,9 @@ export default function MenuSide() {
                 <NavLink
                   to={item.to}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${
-                      isActive
-                        ? "bg-slate-800 font-semibold text-green-400"
-                        : "hover:bg-slate-800"
+                    `flex items-center gap-3 px-3 py-2 rounded transition-colors ${isActive
+                      ? "bg-slate-800 font-semibold text-green-400"
+                      : "hover:bg-slate-800"
                     }`
                   }
                 >
@@ -131,10 +151,9 @@ export default function MenuSide() {
                       key={sub.to}
                       to={sub.to}
                       className={({ isActive }) =>
-                        `block px-3 py-1 rounded transition-colors text-sm ${
-                          isActive
-                            ? "bg-slate-700 text-green-300 font-medium"
-                            : "hover:bg-slate-800"
+                        `block px-3 py-1 rounded transition-colors text-sm ${isActive
+                          ? "bg-slate-700 text-green-300 font-medium"
+                          : "hover:bg-slate-800"
                         }`
                       }
                     >
