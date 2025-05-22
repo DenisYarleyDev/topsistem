@@ -1,6 +1,7 @@
-import axios from "axios";
-import { backUrl } from "../components/Constants";
+// src/pages/Products.jsx
 import { useEffect, useState } from "react";
+import getAllProducts from "../services/Products/productsService";
+import ProductCard from "../components/Cards/ProductsCard";
 
 export default function Products() {
     const [products, setProducts] = useState([]);
@@ -8,26 +9,16 @@ export default function Products() {
 
     useEffect(() => {
         async function fetchProducts() {
-            try {
-                const response = await axios.get(`${backUrl}/products`, {
-                    headers: { "x-access-token": token }
-                });
-                setProducts(response.data); // Aqui é o array de produtos!
-            } catch (err) {
-                console.log(err);
-            }
+            const products = await getAllProducts(token);
+            setProducts(products);
         }
         fetchProducts();
     }, [token]);
 
     return (
-        <div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-6 bg-gray-50 min-h-full w-full">
             {products.map((prod) => (
-                <div key={prod.id}>
-                    <h3>{prod.name}</h3>
-                    <p>{prod.description}</p>
-                    <p>R$ {prod.price}</p>
-                </div>
+                <ProductCard key={prod.id} product={prod} />
             ))}
         </div>
     );
