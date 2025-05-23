@@ -11,7 +11,7 @@ export default function ProductCard({ product }) {
             <p className="text-gray-600 text-sm mb-2">{product.description}</p>
             <p className="font-bold text-xl text-green-700 mb-1">R$ {product.price?.toFixed(2)}</p>
             <p className="text-xs text-gray-500 mb-1">
-                Categoria: {product.category?.name || "Sem categoria"}
+                Categoria: {product.categoryName}
             </p>
             <p className={`font-semibold text-xs mb-1 ${product.stock > 0 ? "text-green-600" : "text-red-600"}`}>
                 {product.stock > 0 ? `Estoque: ${product.stock}` : "Fora de estoque"}
