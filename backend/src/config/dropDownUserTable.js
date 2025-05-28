@@ -17,10 +17,10 @@ async function main() {
     });
 
     // 2) Executa o DROP TABLE
-    await connection.execute(`DROP TABLE IF EXISTS users;`);
-    console.log("✅ Tabela `users` apagada com sucesso!");
+    await connection.execute(`ALTER TABLE products ADD COLUMN is_uni BOOLEAN DEFAULT FALSE;`);
+    console.log("✅ FEITO aad is_uni");
   } catch (err) {
-    console.error("❌ Erro ao apagar tabela `users`:", err);
+    console.error("❌ ero ao add uni `:", err);
     process.exitCode = 1;
   } finally {
     // 3) Encerra a conexão

@@ -3,12 +3,12 @@ import * as ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./index.css";
 import Login from "./pages/Login.jsx";
-import ProtectedRoute from "./components/protectedRoute.jsx";
 import Home from "./pages/Home.jsx";
 import CadUser from "./pages/CadUser.jsx";
 import Layout from "./components/Layout.jsx";
 import Sellers from "./pages/Sellers.jsx";
 import Products from "./pages/Products.jsx";
+import { AuthProvider } from "./components/authProvider.jsx";
 
 const router = createBrowserRouter([
   {
@@ -18,9 +18,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ProtectedRoute>
-        <Layout />
-      </ProtectedRoute>
+        <AuthProvider>
+          <Layout />
+        </AuthProvider>
     ),
     children: [
       {
@@ -45,6 +45,6 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
   </React.StrictMode>
 );

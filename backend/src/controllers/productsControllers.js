@@ -12,3 +12,5 @@ export const getAllCategories = async (req, res) => {
   const getAllCategories = await prisma.category.findMany()
   return res.send(getAllCategories)
 }
+
+

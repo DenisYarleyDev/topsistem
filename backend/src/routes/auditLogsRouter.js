@@ -6,6 +6,6 @@ const router = express.Router();
 //INSERIR LOG DE ALGUMA ALTERACAO
 router.post("/audit-logs", ValidateToken, AuditLogs );
 
- 
+  
 export default router;
  

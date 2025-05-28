@@ -51,6 +51,7 @@ model Product {
   category    Category  @relation(fields: [category_id], references: [id])
   category_id Int
   is_active   Boolean   @default(true)
+  is_uni      Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
 
