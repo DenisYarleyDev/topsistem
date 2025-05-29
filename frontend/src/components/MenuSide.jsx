@@ -26,7 +26,7 @@ export default function MenuSide() {
       subItems: [
         { name: "Clientes", to: "/cad-client" },
         { name: "Usuários", to: "/cad-user" },
-        { name: "Produtos", to: "/cad-product" },
+        { name: "Produtos", to: "/products" },
       ],
     },
   ];

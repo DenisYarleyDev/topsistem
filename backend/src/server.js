@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import "./config/db.js";
 
+import auditLogs from "./routes/auditLogsRouter.js"
 import userRoutes from "./routes/usersRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
@@ -22,6 +23,7 @@ app.use(
   })
 );
 
+app.use("/", auditLogs );
 app.use("/", userRoutes);
 app.use("/", sellersRoutes);
 app.use("/", loginRoutes);
