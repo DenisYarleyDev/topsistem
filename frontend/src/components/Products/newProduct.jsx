@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { backUrl } from "../Constants";
-import { createProduct } from "../../services/Products/productsService";
+import { createProduct, getAllCategories } from "../../services/Products/productsService";
 import Alert from "../Alert";
 
 export default function NewProduct() {
@@ -23,17 +23,13 @@ export default function NewProduct() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    async function fetchCategories() {
-      try {
-        const resp = await axios.get(`${backUrl}/products-categories`, {
-          headers: { "x-access-token": token }
-        });
-        setCategories(resp.data);
-      } catch (err) {
+    getAllCategories(token)
+      .then(data => { setCategories(data); })
+      .catch(err => {
+        console.error("Erro ao buscar categorias:", err);
         setCategories([]);
-      }
-    }
-    fetchCategories();
+      });
+
   }, [token]);
 
   function handleChange(e) {
