@@ -28,7 +28,10 @@ export async function getAllCategories(token) {
 export async function createProduct(productData, token) {
     try {
         const response = await axios.post(`${backUrl}/create-product`, productData, {
-            headers: { "x-access-token": token }
+            headers: { 
+                "x-access-token": token ,
+                "Content-Type": "multipart/form-data"
+            }
         });
         return response.data; // Retorna o produto criado
     } catch (err) {

@@ -1,5 +1,8 @@
 // PRODUCTSCONTROLLER.js
 import prisma from "../config/prisma/index.js";
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import fs from 'fs';
 
 export const getAll = async (req, res) => {
   // LISTAR TODOS PRODUTOS
@@ -24,31 +27,42 @@ export const getAllCategories = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  // CRIAR PRODUTO
+  // Dados do form
   const {
     name,
     description,
     price,
-    image_url,
     stock,
     category_id,
     is_active,
     is_uni
   } = req.body;
 
+  let image_url = null;
   try {
+    // Se tiver arquivo, renomeia e move pra pasta uploads/
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const newName = uuidv4() + ext;
+      const destPath = path.join('public/imgs/products', newName);
+      fs.renameSync(req.file.path, destPath);
+      image_url = destPath.replace(/\\/g, '/'); // deixa o caminho universal (Windows/Linux)
+    }
+
+   
     const newProduct = await prisma.product.create({
       data: {
         name,
-        description: description || null,       // Campos opcionais como null se não vierem
-        price,
-        image_url: image_url || null,
-        stock: stock !== undefined ? Number(stock) : 0, // Garante número e default 0
+        description: description || null,
+        price: price ? Number(price) : 0,
+        image_url, // agora salva o caminho da imagem!
+        stock: stock !== undefined ? Number(stock) : 0,
         category_id: Number(category_id),
-        is_active: is_active !== undefined ? is_active : true,
-        is_uni: is_uni !== undefined ? is_uni : false
+        is_active: is_active==="true" ? true : false, 
+        is_uni: is_uni==="true" ? true : false 
       }
     });
+
     return res.status(201).json(newProduct);
   } catch (error) {
     console.error("Erro ao criar produto:", error);

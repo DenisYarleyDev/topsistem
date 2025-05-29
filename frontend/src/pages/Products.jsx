@@ -12,11 +12,16 @@ export default function Products() {
     const [products, setProducts] = useState([]);
     const [productsCategories, setProductsCategories] = useState([]);
     const token = localStorage.getItem("token");
+    
+    
+     async function fetchProducts() {
+        const products = await getAllProducts(token);
+        setProducts(products);
+    }
+    
     useEffect(() => {
-        async function fetchProducts() {
-            const products = await getAllProducts(token);
-            setProducts(products);
-        }
+        
+        fetchProducts();
         async function fetchProductsCategories() {
             const productsCategories = await getAllCategories(token);
             setProductsCategories(productsCategories);
@@ -31,7 +36,7 @@ export default function Products() {
 
     return (
         <div className="flex flex-col gap-10 p-6 bg-gray-50 min-h-full w-full">
-            {(cargoCode ===1 || cargoCode=== 2) && <NewProduct />}
+            {(cargoCode ===1 || cargoCode=== 2) && <NewProduct onProductCreated={fetchProducts} />}
             {productsCategories.map(category => {
                 const prods = getProductsByCategory(category.id);
                 if (prods.length === 0) return null; // Oculta categorias sem produtos

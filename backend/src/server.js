@@ -29,6 +29,7 @@ app.use("/", sellersRoutes);
 app.use("/", loginRoutes);
 app.use("/", productRoutes);
 app.use("/", verifyJWTRoutes);
+app.use('/public/imgs/products', express.static('public/imgs/products'));
 
 const port = 8080;
 app.listen(port, (err) => {

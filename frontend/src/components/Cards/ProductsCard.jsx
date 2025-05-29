@@ -1,9 +1,11 @@
+import { backUrl } from "../Constants";
+
 // src/components/ProductCard.jsx
 export default function ProductCard({ product }) {
     return (
         <div className="bg-white rounded-2xl shadow-md p-4 max-w-xs w-full h-fit m-3 flex flex-col items-center">
             <img
-                src={product.image_url || "https://via.placeholder.com/300x200?text=Sem+Imagem"}
+                src={product.image_url===null ?  `${backUrl}/public/imgs/products/no-image.png` :`${backUrl}/${product.image_url}` }
                 alt={product.name}
                 className="w-full h-44 object-cover rounded-xl mb-3"
             />

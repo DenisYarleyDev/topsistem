@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { backUrl } from "../Constants";
 import { createProduct, getAllCategories } from "../../services/Products/productsService";
 import Alert from "../Alert";
 
-export default function NewProduct() {
+export default function NewProduct({onProductCreated}) {
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -13,9 +11,10 @@ export default function NewProduct() {
     stock: 0,
     category_id: "",
     is_active: true,
-    is_uni: false
+    is_uni: true
   });
 
+  const [image, setImage] = useState(null);
   const [categories, setCategories] = useState([]);
   const [showAlert, setShowAlert] = useState(false);
   const [alert, setAlert] = useState({ message: "", type: "success" });
@@ -39,20 +38,25 @@ export default function NewProduct() {
       [name]: type === "checkbox"
         ? checked
         : name === "stock" || name === "price"
-        ? value.replace(',', '.')
-        : value
+          ? value.replace(',', '.')
+          : value
     }));
   }
 
   function handleSubmit(e) {
     e.preventDefault();
-    const productData = {
-      ...form,
-      price: parseFloat(form.price),
-      stock: parseInt(form.stock, 10),
-      category_id: parseInt(form.category_id, 10)
-    };
-    createProduct(productData, token)
+
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("description", form.description);
+    formData.append("price", form.price);
+    formData.append("stock", form.stock);
+    formData.append("category_id", form.category_id);
+    formData.append("is_active", form.is_active );
+    formData.append("is_uni", form.is_uni );
+    if (image) formData.append("image", image);
+
+    createProduct(formData, token)
       .then(() => {
         setAlert({ message: "Produto criado com sucesso!", type: "success" });
         setShowAlert(true);
@@ -64,9 +68,11 @@ export default function NewProduct() {
           stock: 0,
           category_id: "",
           is_active: true,
-          is_uni: false
+          is_uni: true
         });
         setShowForm(false); // esconde após salvar, remova se quiser manter aberto
+        setImage(null); // limpa a imagem selecionada
+        if (onProductCreated) onProductCreated()
       })
       .catch(err => {
         setAlert({ message: "Erro ao criar produto: " + err.message, type: "failed" });
@@ -75,7 +81,7 @@ export default function NewProduct() {
   }
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full ">
       {!showForm && (
         <button
           onClick={() => setShowForm(true)}
@@ -87,10 +93,11 @@ export default function NewProduct() {
 
       {showForm && (
         <form
-          className="p-6 bg-white rounded-xl shadow flex flex-col gap-4"
+          className="p-6 bg-white  rounded-xl shadow w-full grid grid-cols-1 md:grid-cols-2 gap-4"
+
           onSubmit={handleSubmit}
         >
-          <h2 className="text-lg font-bold mb-2">Novo produto</h2>
+          <h2 className="text-lg font-bold col-span-2 mb-2">Novo produto</h2>
 
           <div className="flex flex-col gap-1">
             <label htmlFor="name" className="font-semibold">Nome do produto</label>
@@ -105,7 +112,7 @@ export default function NewProduct() {
             />
           </div>
 
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col col-span-2 gap-1">
             <label htmlFor="description" className="font-semibold">Descrição (opcional)</label>
             <textarea
               id="description"
@@ -132,13 +139,12 @@ export default function NewProduct() {
           </div>
 
           <div className="flex flex-col gap-1">
-            <label htmlFor="image_url" className="font-semibold">URL da imagem (opcional)</label>
+            <label htmlFor="image" className="font-semibold">Imagem do produto</label>
             <input
-              id="image_url"
-              type="text"
-              name="image_url"
-              value={form.image_url}
-              onChange={handleChange}
+              id="image"
+              type="file"
+              accept="image/*"
+              onChange={e => setImage(e.target.files[0])}
               className="p-2 rounded border"
             />
           </div>
@@ -196,7 +202,7 @@ export default function NewProduct() {
             <label htmlFor="is_uni" className="font-semibold">Produto por unidade</label>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 col-span-2">
             <button
               type="submit"
               className="bg-blue-600 text-white rounded p-2 hover:bg-blue-700 flex-1"
