@@ -9,6 +9,7 @@ import Layout from "./components/Layout.jsx";
 import Sellers from "./pages/Sellers.jsx";
 import Products from "./pages/Products.jsx";
 import { AuthProvider } from "./components/authProvider.jsx";
+import Customers from "./pages/Customers.jsx";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +36,11 @@ const router = createBrowserRouter([
         path: "sellers",
         element: <Sellers />,
       },
+      {
+        path: "customers",
+        element: <Customers />
+      }
+      ,
       {
         path: "products",
         element: <Products />
