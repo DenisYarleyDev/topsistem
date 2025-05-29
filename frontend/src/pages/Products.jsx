@@ -12,7 +12,6 @@ export default function Products() {
     const [products, setProducts] = useState([]);
     const [productsCategories, setProductsCategories] = useState([]);
     const token = localStorage.getItem("token");
-    console.log("Cargo Code:", cargoCode);
     useEffect(() => {
         async function fetchProducts() {
             const products = await getAllProducts(token);

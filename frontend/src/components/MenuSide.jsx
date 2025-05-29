@@ -40,7 +40,6 @@ export default function MenuSide() {
           `${backUrl}/loggedUser`,
           { headers: { "x-access-token": token } }
         );
-        console.log(data)
         setUsername(data.userName);
         setCargoCode(data.cargo);
 

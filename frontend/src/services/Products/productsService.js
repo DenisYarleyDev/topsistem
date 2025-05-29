@@ -25,4 +25,15 @@ export async function getAllCategories(token) {
     }
 }
 
+export async function createProduct(productData, token) {
+    try {
+        const response = await axios.post(`${backUrl}/create-product`, productData, {
+            headers: { "x-access-token": token }
+        });
+        return response.data; // Retorna o produto criado
+    } catch (err) {
+        console.error("Erro ao criar produtoo:", err);
+        throw err; // Propaga o erro para ser tratado pelo chamador
+    }
+}
 

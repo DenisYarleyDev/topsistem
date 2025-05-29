@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
         fetchUser();
 
         // Verifica a cada 10 segundos
-        intervalId = setInterval(fetchUser, 10_000);
+        intervalId = setInterval(fetchUser, 900_000);
 
         // Cleanup ao desmontar
         return () => clearInterval(intervalId);
