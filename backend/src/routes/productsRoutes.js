@@ -9,4 +9,5 @@ const router = express.Router();
 router.get("/products", ValidateToken, controllers.getAll );
 router.get("/products-categories", ValidateToken,  controllers.getAllCategories );
 router.post("/create-product", ValidateToken, upload.single("image") , controllers.createProduct );
+router.put("/update-product/:id", ValidateToken, upload.single("image"), controllers.updateProduct );
 export default router;

@@ -69,3 +69,48 @@ export const createProduct = async (req, res) => {
     return res.status(500).json({ error: "Erro ao criar produto" });
   }
 };
+
+export const updateProduct = async (req, res) => {
+  // Atualizar produto
+  const { id } = req.params;
+  const {
+    name,
+    description,
+    price,
+    stock,
+    category_id,
+    is_active,
+    is_uni
+  } = req.body;
+
+  let image_url = null;
+  try {
+    // Se tiver arquivo, renomeia e move pra pasta uploads/
+    if (req.file) {
+      const ext = path.extname(req.file.originalname);
+      const newName = uuidv4() + ext;
+      const destPath = path.join('public/imgs/products', newName);
+      fs.renameSync(req.file.path, destPath);
+      image_url = destPath.replace(/\\/g, '/'); // deixa o caminho universal (Windows/Linux)
+    }
+
+    const updatedProduct = await prisma.product.update({
+      where: { id: Number(id) },
+      data: {
+        name,
+        description: description || null,
+        price: price ? Number(price) : 0,
+        image_url, // agora salva o caminho da imagem!
+        stock: stock !== undefined ? Number(stock) : 0,
+        category_id: Number(category_id),
+        is_active: is_active==="true" ? true : false, 
+        is_uni: is_uni==="true" ? true : false 
+      }
+    });
+
+    return res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.error("Erro ao atualizar produto:", error);
+    return res.status(500).json({ error: "Erro ao atualizar produto" });
+  }
+};

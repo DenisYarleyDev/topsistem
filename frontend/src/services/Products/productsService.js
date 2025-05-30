@@ -28,8 +28,8 @@ export async function getAllCategories(token) {
 export async function createProduct(productData, token) {
     try {
         const response = await axios.post(`${backUrl}/create-product`, productData, {
-            headers: { 
-                "x-access-token": token ,
+            headers: {
+                "x-access-token": token,
                 "Content-Type": "multipart/form-data"
             }
         });
@@ -40,3 +40,23 @@ export async function createProduct(productData, token) {
     }
 }
 
+
+// productsService.js
+export async function updateProduct(id, formData, token) {
+    try{
+        const res = await axios.put(`${backUrl}/update-product/${id}`,
+            formData, {
+                headers: {
+                    "x-access-token": token,
+                    "Content-Type": "multipart/form-data",
+                },
+            }
+        );
+        return res.data;
+
+    } catch (err) {
+        console.error("Erro ao atualizar produto:", err);
+        throw err; // Propaga o erro para ser tratado pelo chamador
+    }
+    
+}

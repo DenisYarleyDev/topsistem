@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import {getAllProducts, getAllCategories} from "../services/Products/productsService";
-import ProductCard from "../components/Cards/ProductsCard";
+import ProductCard from "../components/Products/ProductsCard";
 import NewProduct from "../components/Products/newProduct";
 import { useAuth } from "../components/authProvider";
 
