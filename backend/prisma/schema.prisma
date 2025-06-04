@@ -14,8 +14,8 @@ model Role {
   name  String @unique
 
   users User[]
-
-  @@map("roles")
+  customers Customer[]
+  
 }
 
 // === USERS ===
@@ -27,6 +27,8 @@ model User {
   telefone String
 
   role Role @relation(fields: [cargo], references: [id])
+  customers Customer[] @relation("SellerCustomers")
+
   
   @@map("users")
 }
@@ -70,4 +72,21 @@ model AuditLog {
   changed_at DateTime @default(now())
 
   @@map("audit_logs")
+}
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String?  @unique
+  cpf        String   @unique
+  phone      String?
+  address    String?
+  roleId     Int      @map("role_id")
+  sellerId   Int      @map("seller_id")
+  role       Role     @relation(fields: [roleId], references: [id])
+  seller     User     @relation("SellerCustomers", fields: [sellerId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt      @map("updated_at")
+
+  @@map("customers")
 }

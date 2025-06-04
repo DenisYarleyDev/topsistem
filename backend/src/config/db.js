@@ -43,21 +43,21 @@ async function initDb() {
     ) ENGINE=InnoDB;
   `);
 
- /*  await db.execute(`
-    DROP TABLE IF EXISTS products;
-   
-  `)
-
-  await db.execute(`
-
-    DROP TABLE IF EXISTS categories;
-  `) */
+  /*  await db.execute(`
+     DROP TABLE IF EXISTS products;
+    
+   `)
+ 
+   await db.execute(`
+ 
+     DROP TABLE IF EXISTS categories;
+   `) */
   await db.execute(`
     CREATE TABLE IF NOT EXISTS categories (
       id INT AUTO_INCREMENT PRIMARY KEY,
       name VARCHAR(50) NOT NULL UNIQUE
     );
-  `) 
+  `)
 
   await db.execute(`
     CREATE TABLE IF NOT EXISTS products (
@@ -87,6 +87,23 @@ async function initDb() {
     );
   
   `)
+  await db.execute(`
+  CREATE TABLE IF NOT EXISTS customers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    phone VARCHAR(20),
+    address VARCHAR(255),
+    role_id INT NOT NULL DEFAULT 16,
+    seller_id INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES roles(id),
+    CONSTRAINT fk_seller FOREIGN KEY (seller_id) REFERENCES users(id)
+  );
+`);
+
 
 
   console.log("✅ Tabelas (roles, users) inicializadas com cargos padrão");

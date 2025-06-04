@@ -17,8 +17,8 @@ async function main() {
     });
 
     // 2) Executa o DROP TABLE
-    await connection.execute(`ALTER TABLE products ADD COLUMN is_uni BOOLEAN DEFAULT FALSE;`);
-    console.log("✅ FEITO aad is_uni");
+    await connection.execute(`DROP TABLE customers;`);
+    console.log("✅ deletada tabela customers");
   } catch (err) {
     console.error("❌ ero ao add uni `:", err);
     process.exitCode = 1;

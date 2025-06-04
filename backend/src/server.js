@@ -9,6 +9,7 @@ import loginRoutes from "./routes/loginRoutes.js";
 import productRoutes from "./routes/productsRoutes.js";
 import verifyJWTRoutes from "./routes/verifyJWT.js";
 import sellersRoutes from "./routes/sellersRoute.js";
+import customerRoutes from "./routes/customerRouter.js";
 
 dotenv.config();
 
@@ -18,7 +19,10 @@ app.use(express.json());
 // CONFIGURAÇÃO DO CORS
 app.use(
   cors({
-    origin: process.env.URL_FRONTEND_FOR_CORS,
+    origin: [
+      process.env.URL_FRONTEND_FOR_CORS, 
+      "http://localhost:5173",
+    ],
     credentials: true,
   })
 );
@@ -30,9 +34,10 @@ app.use("/", loginRoutes);
 app.use("/", productRoutes);
 app.use("/", verifyJWTRoutes);
 app.use('/public/imgs/products', express.static('public/imgs/products'));
+app.use("/", customerRoutes);
 
 const port = 8080;
-app.listen(port, (err) => {
+app.listen(port,"0.0.0.0", (err) => {
   if (err) {
     return console.log(err);
   }
